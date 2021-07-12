@@ -1,0 +1,8 @@
+name: ObbyFillPlugin
+version: 1.0
+main: io.github.crackedbrew.obbyfillplugin.ObbyFillPlugin
+description: A plugin that fills the players inventory with obsidian for a modifiable price
+commands:
+  obbyfill:
+    description: Fills the players inventory with obsidian for a set price per stack
+    usage: /<command>
