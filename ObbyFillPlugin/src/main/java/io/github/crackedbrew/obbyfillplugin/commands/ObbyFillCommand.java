@@ -51,7 +51,7 @@ public class ObbyFillCommand implements CommandExecutor {
                     playersInventoryItems) {
 
                 //if the item is nothing, then add obsidian to the slot
-                if (econ.getBalance(player) > requiredMoneyAmount && item == null){
+                if (econ.getBalance(player) >= requiredMoneyAmount && item == null){
 
                     inventory.addItem(OBSIDIAN_ITEM_STACK);
 
