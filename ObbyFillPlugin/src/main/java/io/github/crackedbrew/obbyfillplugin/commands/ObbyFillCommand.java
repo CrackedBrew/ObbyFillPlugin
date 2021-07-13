@@ -13,7 +13,8 @@ import org.bukkit.inventory.ItemStack;
 
 public class ObbyFillCommand implements CommandExecutor {
 
-    String serverTag;
+
+    String serverTag, transactionSuccessMessage, notEnoughSpaceMessage, notEnoughMoneyMessage;
     Economy econ;
     ItemStack OBSIDIAN_ITEM_STACK = new ItemStack(Material.OBSIDIAN, 64);
     double pricePerStack;
@@ -21,10 +22,15 @@ public class ObbyFillCommand implements CommandExecutor {
 
     public ObbyFillCommand (Economy econ, FileConfiguration config) {
 
+        //initializing variables from config and such
         this.econ = econ;
         this.config = config;
         this.serverTag = config.getString("server_tag");
         this.pricePerStack = config.getDouble("obsidian_stack_price");
+        this.transactionSuccessMessage = config.getString("transaction_success_message");
+        this.notEnoughSpaceMessage = config.getString("not_enough_space_message");
+        this.notEnoughMoneyMessage = config.getString("not_enough_money_message");
+
 
     }//constructor
 
@@ -73,17 +79,17 @@ public class ObbyFillCommand implements CommandExecutor {
 
                 econ.withdrawPlayer(player, moneySpent);
 
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', serverTag + " " + econ.format(moneySpent) +  " was spent on obsidian"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', formatConfigText(config.getString("transaction_success_message"), moneySpent)));
 
             }//if
             else if (!hasEmptySpace){
 
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',serverTag + " You don't have any free space in your inventory"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&',formatConfigText(config.getString("not_enough_space_message"), moneySpent)));
 
             }//else if
             else {
 
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&',serverTag + " You don't have enough money to use this command"));
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', formatConfigText(config.getString("not_enough_money_message"), moneySpent)));
 
             }//else if the player doesn't have money
 
@@ -95,5 +101,37 @@ public class ObbyFillCommand implements CommandExecutor {
         }//else
 
         return true;
-    }
-}
+    }//onCommand
+
+    //Methods
+    //formatting the config strings so people can use pre-defined variables in the config messages
+    public String formatConfigText(String stringParameter, double moneySpent) {
+
+        //if the string parameter contains $$$ then replace the sequence of those symbols to their proper value form
+        //which in this case is going to be moneySpent, in a formated way with econ
+        if (stringParameter.contains("$$$")) {
+
+            //$$$ meaning how much the player spent on obsidian
+            stringParameter = stringParameter.replace("$$$", econ.format(moneySpent));
+
+        }//if
+        if (stringParameter.contains("$ps")) {
+
+            //$ps meaning price per stack
+            stringParameter = stringParameter.replace("$ps", econ.format(pricePerStack));
+
+        }//if
+        if (stringParameter.contains("serverTag")) {
+
+            stringParameter = stringParameter.replace("serverTag", serverTag);
+
+        }//if
+
+        return stringParameter;
+
+    }//formatConfigText Method
+
+
+
+
+}//class

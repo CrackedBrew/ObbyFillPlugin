@@ -40,12 +40,28 @@ public class ObbyFillPlugin extends JavaPlugin {
         config.options().copyDefaults(true);
         saveConfig();
 
+        //prompt messages configuration
+        //transaction success message
+        config.addDefault("transaction_success_message", "serverTag $$$ was spent on obsidian at $ps");
+        config.options().copyDefaults(true);
+        saveConfig();
+
+        config.addDefault("not_enough_space_message", "serverTag You don't have any free space in your inventory");
+        config.options().copyDefaults(true);
+        saveConfig();
+
+        config.addDefault("not_enough_money_message", "serverTag You don't have enough money to use this command");
+        config.options().copyDefaults(true);
+        saveConfig();
+
+
         //config check if the plugin is enabled or not, if not, then disable the plugin
         if(!config.getBoolean("enabled")) {
 
             getServer().getPluginManager().disablePlugin(this);
 
         }
+
 
         //commands
         this.getCommand("obbyfill").setExecutor(new ObbyFillCommand(econ, config));
